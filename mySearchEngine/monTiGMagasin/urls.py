@@ -19,5 +19,6 @@ urlpatterns = [
     
     
     path('putonsale/<int:tig_id>/<str:newprice>/', PutOnSaleView.as_view(), name='putonsale'),
+    # path('putonsale/', PutOnSaleView.as_view()),
     path('removesale/<int:tig_id>/', RemoveSaleView.as_view(), name='removesale'),
 ]

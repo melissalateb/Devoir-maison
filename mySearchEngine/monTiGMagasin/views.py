@@ -7,6 +7,8 @@ from django.http import Http404
 from monTiGMagasin.config import baseUrl
 from monTiGMagasin.models import InfoProduct
 from monTiGMagasin.serializers import InfoProductSerializer
+from monTiGMagasin.serializers import InfoPutPriceSerializerPut
+from monTiGMagasin.serializers import InfoPutPriceSerializerRemove
 
 # Create your views here.
 class InfoProductList(APIView):
@@ -57,7 +59,7 @@ class InfoProductDetail(APIView):
 
 class PutOnSaleView(UpdateAPIView):
     queryset = InfoProduct.objects.all()
-    serializer_class = InfoProductSerializer
+    serializer_class = InfoPutPriceSerializerPut
     lookup_field = 'tig_id'
 
     def update(self, request, *args, **kwargs):
@@ -70,7 +72,7 @@ class PutOnSaleView(UpdateAPIView):
 
 class RemoveSaleView(UpdateAPIView):
     queryset = InfoProduct.objects.all()
-    serializer_class = InfoProductSerializer
+    serializer_class = InfoPutPriceSerializerRemove
     lookup_field = 'tig_id'
 
     def update(self, request, *args, **kwargs):
@@ -80,3 +82,28 @@ class RemoveSaleView(UpdateAPIView):
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+    
+# class PutOnSaleView(UpdateAPIView):
+#     queryset = InfoProduct.objects.all()
+#     serializer_class = InfoPutPriceSerializer
+#     lookup_field = 'tig_id'
+
+#     def update(self, request, *args, **kwargs):
+#         instance = self.get_object()
+
+#         # Get the new values from the query parameters
+#         new_sale = request.query_params.get('sale')
+#         new_discount = request.query_params.get('discount')
+
+#         if new_sale is not None:
+#             instance.sale = new_sale.lower() == 'true'  # Convert the string to a boolean
+
+#         if new_discount is not None:
+#             instance.discount = float(new_discount)
+
+#         instance.save()
+
+#         serializer = self.get_serializer(instance)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
