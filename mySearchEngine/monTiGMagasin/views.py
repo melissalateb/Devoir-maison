@@ -6,9 +6,7 @@ from rest_framework.response import Response
 from django.http import Http404
 from monTiGMagasin.config import baseUrl
 from monTiGMagasin.models import InfoProduct
-from monTiGMagasin.serializers import InfoProductSerializer
-from monTiGMagasin.serializers import InfoPutPriceSerializerPut
-from monTiGMagasin.serializers import InfoPutPriceSerializerRemove
+from monTiGMagasin.serializers import InfoPutPriceSerializerRemove, InfoPutPriceSerializeronchange, InfoPutPriceSerializerPut, InfoProductSerializer
 
 # Create your views here.
 class InfoProductList(APIView):
@@ -107,3 +105,31 @@ class RemoveSaleView(UpdateAPIView):
 
 #         serializer = self.get_serializer(instance)
 #         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+class IncrementStockView(UpdateAPIView):
+    queryset = InfoProduct.objects.all()
+    serializer_class = InfoPutPriceSerializeronchange
+    lookup_field = 'tig_id'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        increment_by = int(self.kwargs['number'])
+        instance.quantityInStock += increment_by
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DecrementStockView(UpdateAPIView):
+    queryset = InfoProduct.objects.all()
+    serializer_class = InfoPutPriceSerializeronchange
+    lookup_field = 'tig_id'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        decrement_by = int(self.kwargs['number'])
+        instance.quantityInStock -= decrement_by
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -16,3 +16,10 @@ class InfoPutPriceSerializerRemove(ModelSerializer):
     class Meta:
         model = InfoProduct
         fields = ('tig_id',)
+        
+        
+class InfoPutPriceSerializeronchange(ModelSerializer):
+    class Meta:
+        model = InfoProduct
+        fields = ('tig_id',)
+        

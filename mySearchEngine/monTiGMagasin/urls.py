@@ -1,7 +1,7 @@
 from django.urls import path, register_converter
 from monTiGMagasin import views
 from .converters import FloatConverter
-from .views import PutOnSaleView, RemoveSaleView
+from .views import PutOnSaleView, RemoveSaleView, DecrementStockView, IncrementStockView
 
 register_converter(FloatConverter, 'float')
 
@@ -18,7 +18,11 @@ urlpatterns = [
     # path('removesale/<int:tig_id>/', views.remove_sale.as_view()),
     
     
-    path('putonsale/<int:tig_id>/<str:newprice>/', PutOnSaleView.as_view(), name='putonsale'),
+    path('putonsale/<int:tig_id>/<float:newprice>/', PutOnSaleView.as_view(), name='putonsale'),
     # path('putonsale/', PutOnSaleView.as_view()),
     path('removesale/<int:tig_id>/', RemoveSaleView.as_view(), name='removesale'),
+    
+    #Exercice 3 : increment and decrement the stock
+    path('incrementStock/<int:tig_id>/<int:number>/', IncrementStockView.as_view(), name='increment_stock'),
+    path('decrementStock/<int:tig_id>/<int:number>/', DecrementStockView.as_view(), name='decrement_stock'),
 ]
