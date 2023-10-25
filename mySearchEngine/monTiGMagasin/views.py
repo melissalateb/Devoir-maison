@@ -56,28 +56,33 @@ class RemoveSaleView(APIView):
         except InfoProduct.DoesNotExist:
             return Response({'message': 'Product not found'}, status=404)
 
-class IncrementStockView(UpdateAPIView):
-    queryset = InfoProduct.objects.all()
-    serializer_class = InfoPutPriceSerializeronchange
-    lookup_field = 'tig_id'
 
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        increment_by = int(self.kwargs['number'])
-        instance.quantityInStock += increment_by
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class IncrementStockView(APIView):
+    def put(self, request, tig_id, number):
+        try:
+            increment_by = int(number)
+            product = InfoProduct.objects.get(tig_id=tig_id)
+            product.quantityInStock += increment_by
+            product.save()
 
-class DecrementStockView(UpdateAPIView):
-    queryset = InfoProduct.objects.all()
-    serializer_class = InfoPutPriceSerializeronchange
-    lookup_field = 'tig_id'
+            # Sérialisez l'objet InfoProduct avant de le renvoyer
+            serializer = InfoProductSerializer(product)
+            return Response(serializer.data)  # Renvoie uniquement l'objet modifié
+        except (InfoProduct.DoesNotExist, ValueError):
+            return Response({'message': 'Product not found or invalid increment'}, status=404)
 
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        decrement_by = int(self.kwargs['number'])
-        instance.quantityInStock -= decrement_by
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DecrementStockView(APIView):
+    def put(self, request, tig_id, number):
+        try:
+            decrement_by = int(number)
+            product = InfoProduct.objects.get(tig_id=tig_id)
+            product.quantityInStock -= decrement_by
+            product.save()
+
+            # Sérialisez l'objet InfoProduct avant de le renvoyer
+            serializer = InfoProductSerializer(product)
+            return Response(serializer.data)  # Renvoie uniquement l'objet modifié
+        except (InfoProduct.DoesNotExist, ValueError):
+            return Response({'message': 'Product not found or invalid decrement'}, status=404)
+
