@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'mytig.apps.MytigConfig',
+    # 'background_task',
 ###################
 #...TME2 starts...#
     'myImageBank.apps.MyimagebankConfig',
@@ -60,6 +61,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# BACKGROUND_TASK_RUN_IMMEDIATELY = True
+# BACKGROUND_TASK_PRIORITY = 15
 
 ROOT_URLCONF = 'mySearchEngine.urls'
 

@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.http import Http404
 from monTiGMagasin.config import baseUrl
 from monTiGMagasin.models import InfoProduct
-from monTiGMagasin.serializers import InfoPutPriceSerializerRemove, InfoPutPriceSerializeronchange, InfoPutPriceSerializerPut, InfoProductSerializer
+from monTiGMagasin.serializers import InfoProductSerializer
 
 # Create your views here.
 class InfoProductList(APIView):
