@@ -26,87 +26,35 @@ class InfoProductDetail(APIView):
         return Response(serializer.data)
 
 
-# class put_on_sale(APIView):
-#     def put(self, request, tig_id, newprice, format=None):
-#         try:
-#             product = InfoProduct.objects.get(tig_id=tig_id)
-#         except InfoProduct.DoesNotExist:
-#             raise Http404
-#         product.sale = True
-#         product.discount = newprice
-#         product.save()
-        
-#         serialize = InfoProductSerializer(product)
-#         return Response(serialize.data)
+class PutOnSaleView(APIView):
+    def put(self, request, tig_id, newprice):
+        try:
+            newprice_float = float(newprice)
+            product = InfoProduct.objects.get(tig_id=tig_id)
+            product.sale = True
+            product.discount = newprice_float
+            product.save()
 
-# class remove_sale(APIView):
-#     def put(self, request, tig_id, newprice, format=None):
-#         try:
-#             product = InfoProduct.objects.get(tig_id=tig_id)
-#         except InfoProduct.DoesNotExist:
-#             raise Http404
-
-#         product.sale = False
-#         product.discount = 0.0
-#         product.save()
-
-#         serializer = InfoProductSerializer(product)
-#         return Response(serializer.data)
+            # Sérialisez l'objet InfoProduct avant de le renvoyer
+            serializer = InfoProductSerializer(product)
+            return Response(serializer.data)  # Renvoie uniquement l'objet modifié
+        except (InfoProduct.DoesNotExist, ValueError):
+            return Response({'message': 'Product not found or invalid newprice'}, status=Http404)
 
 
+class RemoveSaleView(APIView):
+    def put(self, request, tig_id):
+        try:
+            product = InfoProduct.objects.get(tig_id=tig_id)
+            product.sale = False
+            product.discount = 0
+            product.save()
 
-class PutOnSaleView(UpdateAPIView):
-    queryset = InfoProduct.objects.all()
-    serializer_class = InfoPutPriceSerializerPut
-    lookup_field = 'tig_id'
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.sale = True
-        instance.discount = float(self.kwargs['newprice'])
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-class RemoveSaleView(UpdateAPIView):
-    queryset = InfoProduct.objects.all()
-    serializer_class = InfoPutPriceSerializerRemove
-    lookup_field = 'tig_id'
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.sale = False
-        instance.discount = 0
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
-    
-# class PutOnSaleView(UpdateAPIView):
-#     queryset = InfoProduct.objects.all()
-#     serializer_class = InfoPutPriceSerializer
-#     lookup_field = 'tig_id'
-
-#     def update(self, request, *args, **kwargs):
-#         instance = self.get_object()
-
-#         # Get the new values from the query parameters
-#         new_sale = request.query_params.get('sale')
-#         new_discount = request.query_params.get('discount')
-
-#         if new_sale is not None:
-#             instance.sale = new_sale.lower() == 'true'  # Convert the string to a boolean
-
-#         if new_discount is not None:
-#             instance.discount = float(new_discount)
-
-#         instance.save()
-
-#         serializer = self.get_serializer(instance)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
+            # Sérialisez l'objet InfoProduct avant de le renvoyer
+            serializer = InfoProductSerializer(product)
+            return Response(serializer.data)  # Renvoie uniquement l'objet modifié
+        except InfoProduct.DoesNotExist:
+            return Response({'message': 'Product not found'}, status=404)
 
 class IncrementStockView(UpdateAPIView):
     queryset = InfoProduct.objects.all()
